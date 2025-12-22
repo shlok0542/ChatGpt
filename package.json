@@ -1,0 +1,32 @@
+{
+  "name": "chatgpt-clone",
+  "version": "1.0.0",
+  "description": "chatgpt clone",
+  "license": "ISC",
+  "author": "ShlokMaurya",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js",
+    "start": "node server.js",
+    "client": "npm start --prefix ./client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "@google/genai": "^1.31.0",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.1",
+    "colors": "^1.4.0",
+    "concurrently": "^9.2.1",
+    "cookie": "^1.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "js": "^0.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.0",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.11"
+  }
+}
