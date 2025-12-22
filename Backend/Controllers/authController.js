@@ -1,6 +1,5 @@
-const userModel = require('../Models/userModel');
+const userModel = require('../models/userModel');
 const errorResponse = require('../utils/errorResponse');
-
 
 // JWT TOKEN
 exports.sendToken = (user, statusCode, res) => {
