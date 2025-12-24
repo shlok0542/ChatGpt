@@ -1,38 +1,36 @@
 import React from "react";
 import {NavLink ,useNavigate} from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-import axios from 'axios';
 
 const Resister = () => {
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
   const navigate=useNavigate();
  
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
         e.preventDefault();
-        try{
-         axios.post("/api/v1/auth/register",{username,email,phone,password});
-         toast.success('Registered Successfully!');
-          navigate('/login');
-        }
-        catch(err){
-          console.log("Registration error:", err);
-          if(err.response && err.response.data && err.response.data.message)
-          {
-            setError(err.response.data.message);
-          }
-          else if (err.message){
-            setError(err.message);
-          }
-          setTimeout(() => {
-            setError("");
-          }, 5000);
-        }
-  }
 
+        try {
+          const res = await fetch("http://localhost:8080/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email,password }),
+          });
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.message || "Registration failed");
+          }
+          else {
+            toast.success("Registration successful!");
+            navigate("/login");
+          }
+        } catch (err) {
+           console.error("Registration error:", err);
+          return;
+        }
+      };
+    
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
@@ -91,21 +89,6 @@ const Resister = () => {
               />
             </div>
 
-            {/* Phone */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-slate-200">
-                Phone Number
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-emerald-400/70 focus:ring-2 focus:ring-emerald-500/40 transition"
-                placeholder="+91 9876543210"
-                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-
             {/* Password */}
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-slate-200">
@@ -121,7 +104,7 @@ const Resister = () => {
               />
             </div>
            
-            {/* Terms */}
+            {/* Terms
             <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -132,7 +115,7 @@ const Resister = () => {
               <span className="text-cyan-300 hover:text-cyan-200">
                 Terms & Conditions
               </span>
-            </label>
+            </label> */}
 
             {/* Submit Button */}
             <button
