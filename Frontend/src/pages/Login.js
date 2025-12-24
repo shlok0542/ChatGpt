@@ -1,7 +1,36 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom';
-
+import { Eye, EyeOff } from "lucide-react";
+import toast ,{Toaster} from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+  const [hidden, setHidden]= React.useState(true);
+  const [userEmail, setUserEmail] = React.useState("");
+  const [userPassword, setUserPassword] = React.useState("");
+  const navigate= useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try{
+      const res = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "email": userEmail,
+          "password": userPassword
+    })});
+       
+      if(res.ok){
+        toast.success("Login Successful!");
+        setTimeout(() => {
+          navigate("/ChatPage");
+        }, 1000);
+      }
+  }
+  catch (error) {
+      console.error("Login error:", error);
+  }
+}
   return (
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
       {/* Background glow circles */}
@@ -44,12 +73,9 @@ const Login = () => {
           {/* Form */}
           <form
             className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              // handle login here
-              console.log("Login submitted");
-            }}
+            onSubmit={handleSubmit}
           >
+            <Toaster/>
             {/* Email */}
             <div className="space-y-1.5">
               <label
@@ -63,6 +89,8 @@ const Login = () => {
                   id="email"
                   type="email"
                   required
+                  value={userEmail}
+                onChange={(e)=> setUserEmail(e.target.value)}
                   className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40 transition"
                   placeholder="you@example.com"
                 />
@@ -90,27 +118,18 @@ const Login = () => {
               </div>
               <input
                 id="password"
-                type="password"
+                type={hidden ? "password" : "text"}
                 required
+                value={userPassword}
+                onChange={(e)=> setUserPassword(e.target.value)}
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/40 transition"
-                placeholder="●●●●●●●●"
               />
+              <div className="absolute top-[202px] right-[25px] lg:top-[200px] lg:right-[30px] mt-9 mr-4 cursor-pointer " onClick={()=>setHidden(!hidden)}>
+               {hidden ? <Eye color="#838181"/>: <EyeOff color="#838181"/>}
+              </div>
             </div>
 
-            {/* Remember me */}
-            <div className="mt-1 flex items-center justify-between text-xs text-slate-300">
-              <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  className="h-3.5 w-3.5 rounded border border-white/25 bg-transparent text-cyan-400 focus:ring-0"
-                />
-                <span>Remember me</span>
-              </label>
-              <span className="text-[11px] text-slate-400">
-                Secured with 256-bit encryption
-              </span>
-            </div>
-
+  
             {/* Submit button */}
             <button
               type="submit"

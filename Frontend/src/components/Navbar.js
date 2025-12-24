@@ -15,13 +15,13 @@ const Navbar = () => {
       <div className="flex justify-center">
         <NavLink
           to={"/login"}
-          className="p-2 bg-slate-200 rounded-sm m-1 hover:bg-slate-100 hover:scale-105 transition-transform duration-2"
+          className=" cursor-pointer p-2 bg-slate-200 rounded-sm m-1 hover:bg-slate-100 hover:scale-105 transition-transform duration-2"
         >
           Login
         </NavLink>
         <NavLink
           to={"/register"}
-          className="p-2 bg-slate-200 rounded-sm m-1 hover:bg-slate-100 hover:scale-105 transition-transform duration-2"
+          className="cursor-pointer p-2 bg-slate-200 rounded-sm m-1 hover:bg-slate-100 hover:scale-105 transition-transform duration-2"
         >
           SignUP
         </NavLink>

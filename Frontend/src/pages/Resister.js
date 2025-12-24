@@ -1,36 +1,33 @@
 import React from "react";
 import {NavLink ,useNavigate} from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-import axios from 'axios';
+import { Eye, EyeOff } from "lucide-react";
 
 const Resister = () => {
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
-  const navigate=useNavigate();
- 
-  const handleSubmit = (e) => {
+  const [hidden, setHidden]= React.useState(true);
+  const navigate= useNavigate();
+  const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-         axios.post("/api/v1/auth/register",{username,email,phone,password});
-         toast.success('Registered Successfully!');
-          navigate('/login');
-        }
-        catch(err){
-          console.log("Registration error:", err);
-          if(err.response && err.response.data && err.response.data.message)
-          {
-            setError(err.response.data.message);
-          }
-          else if (err.message){
-            setError(err.message);
-          }
-          setTimeout(() => {
-            setError("");
-          }, 5000);
-        }
+        try {
+      const res = await fetch("http://localhost:8080/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "name": username,
+          "email": email,
+          "password": password
+         })});
+      toast.success("Registration Successful!");
+      navigate("/login");
+      console.log(res);
+}
+catch (error) {
+      toast.error("Registration Failed. Please try again.");
+      console.error("Registration error:", error);
+}
   }
 
 
@@ -64,7 +61,7 @@ const Resister = () => {
             {/* Full Name */}
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-slate-200">
-                Full Name
+                Name
               </label>
               <input
                 type="text"
@@ -79,7 +76,7 @@ const Resister = () => {
             {/* Email */}
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-slate-200">
-                Email Address
+                Email
               </label>
               <input
                 type="email"
@@ -91,49 +88,24 @@ const Resister = () => {
               />
             </div>
 
-            {/* Phone */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-slate-200">
-                Phone Number
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-emerald-400/70 focus:ring-2 focus:ring-emerald-500/40 transition"
-                placeholder="+91 9876543210"
-                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-
             {/* Password */}
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-slate-200">
                 Password
               </label>
               <input
-                type="password"
+                type={hidden ? "password" : "text"}
                 required
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-pink-400/70 focus:ring-2 focus:ring-pink-500/40 transition"
                 placeholder="●●●●●●●●"
                  value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <div className="absolute top-[222px] right-[25px] lg:top-[215px] lg:right-[30px] mt-9 mr-4 cursor-pointer " onClick={()=>setHidden(!hidden)}>
+               {hidden ? <Eye color="#838181"/>: <EyeOff color="#838181"/>}
+              </div>
             </div>
            
-            {/* Terms */}
-            <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                required
-                className="h-3.5 w-3.5 rounded border border-white/25 bg-transparent text-cyan-400 focus:ring-0"
-              />
-              I agree to the{" "}
-              <span className="text-cyan-300 hover:text-cyan-200">
-                Terms & Conditions
-              </span>
-            </label>
-
             {/* Submit Button */}
             <button
               type="submit"
