@@ -1,39 +1,41 @@
-import React from 'react'
-import {NavLink, useNavigate } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
+import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const Navigate = useNavigate();
-  console.log(`/login`);
-  const handleSubmit = async(e) => {
-    console.log("Login attempt");
-        e.preventDefault();
-        try {
-          const res = await fetch(`https://chatgpt-4ema.onrender.com/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          });
-        if(res.ok){
-          toast.success("Login successful!");
-          setTimeout(() => {
-             Navigate("/chat");
-          }, 1500);
-        }
-        else{
-          const data = await res.json();
-          throw new Error(data.message || "Login failed");
-        }
-        } catch (err) {
-            console.error("Login error:", err);
-            return;
-        }
-  }
+
+  /* Backend URL */
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+  /* handle submit function */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (res.ok) {
+        toast.success("Login successful!");
+        setTimeout(() => {
+          Navigate("/chat");
+        }, 1500);
+      } else {
+        const data = await res.json();
+        throw new Error(data.message || "Login failed");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      return;
+    }
+  };
   return (
-      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
-        <Toaster />
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
+      <Toaster />
       {/* Background glow circles */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
@@ -72,10 +74,7 @@ const Login = () => {
           </div>
 
           {/* Form */}
-          <form
-            className="space-y-4"
-            onSubmit={handleSubmit}
-          >
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
             <div className="space-y-1.5">
               <label
@@ -149,7 +148,6 @@ const Login = () => {
       </div>
     </div>
   );
+};
 
-}
-
-export default Login
+export default Login;

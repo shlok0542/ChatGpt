@@ -8,11 +8,16 @@ const Resister = () => {
   const [password, setPassword] = React.useState("");
   const navigate=useNavigate();
  
+
+    /* Backend URL */
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+  /* handle submit function */
   const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await fetch("https://chatgpt-4ema.onrender.com/register", {
+    const res = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

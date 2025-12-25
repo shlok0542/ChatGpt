@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -86,6 +86,8 @@ while (index < text.length) {
 }
 };
 
+  /* Backend URL */
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   /* Send Message */
   const handleSend = async (e) => {
@@ -103,7 +105,7 @@ while (index < text.length) {
     setLoading(true);
 
     try {
-      const res = await fetch("https://chatgpt-4ema.onrender.com/api/gemini", {
+      const res = await fetch(`${API_URL}/api/gemini`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
