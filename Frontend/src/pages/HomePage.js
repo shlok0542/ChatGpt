@@ -32,36 +32,9 @@ const HomePage = () => {
             </Link >
 
             <Link to={'/register'} className="px-8 py-3 rounded-lg border border-white hover:bg-white hover:text-black transition font-semibold">
-             create Account
+             Create Account
             </Link >
-          </div>
-
-          {/* Features Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl text-center hover:scale-105 transition">
-              <h3 className="text-xl font-semibold mb-2">Instant Answers</h3>
-              <p className="text-gray-300">
-                Get accurate responses in real-time for any question.
-              </p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl text-center hover:scale-105 transition">
-              <h3 className="text-xl font-semibold mb-2">Smart Conversations</h3>
-              <p className="text-gray-300">
-                Human-like interaction with advanced AI understanding.
-              </p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl text-center hover:scale-105 transition">
-              <h3 className="text-xl font-semibold mb-2">Secure & Fast</h3>
-              <p className="text-gray-300">
-                Optimized performance with secure authentication.
-              </p>
-            </div>
-
-          </div>
-
+          </div> 
         </div>
       </div>
     </>

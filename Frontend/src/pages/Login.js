@@ -1,9 +1,39 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom';
+import {NavLink, useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Login = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const Navigate = useNavigate();
+  console.log(`/login`);
+  const handleSubmit = async(e) => {
+    console.log("Login attempt");
+        e.preventDefault();
+        try {
+          const res = await fetch(`https://chatgpt-4ema.onrender.com/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+        if(res.ok){
+          toast.success("Login successful!");
+          setTimeout(() => {
+             Navigate("/chat");
+          }, 1500);
+        }
+        else{
+          const data = await res.json();
+          throw new Error(data.message || "Login failed");
+        }
+        } catch (err) {
+            console.error("Login error:", err);
+            return;
+        }
+  }
   return (
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
+        <Toaster />
       {/* Background glow circles */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
@@ -44,11 +74,7 @@ const Login = () => {
           {/* Form */}
           <form
             className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              // handle login here
-              console.log("Login submitted");
-            }}
+            onSubmit={handleSubmit}
           >
             {/* Email */}
             <div className="space-y-1.5">
@@ -63,6 +89,8 @@ const Login = () => {
                   id="email"
                   type="email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40 transition"
                   placeholder="you@example.com"
                 />
@@ -91,24 +119,11 @@ const Login = () => {
               <input
                 id="password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/40 transition"
-                placeholder="●●●●●●●●"
               />
-            </div>
-
-            {/* Remember me */}
-            <div className="mt-1 flex items-center justify-between text-xs text-slate-300">
-              <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  className="h-3.5 w-3.5 rounded border border-white/25 bg-transparent text-cyan-400 focus:ring-0"
-                />
-                <span>Remember me</span>
-              </label>
-              <span className="text-[11px] text-slate-400">
-                Secured with 256-bit encryption
-              </span>
             </div>
 
             {/* Submit button */}
@@ -116,7 +131,7 @@ const Login = () => {
               type="submit"
               className="mt-2 inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-purple-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 hover:brightness-110 active:scale-[0.99] transition"
             >
-              Sign in
+              login
             </button>
           </form>
 

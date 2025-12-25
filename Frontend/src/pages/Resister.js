@@ -8,28 +8,32 @@ const Resister = () => {
   const [password, setPassword] = React.useState("");
   const navigate=useNavigate();
  
-  const handleSubmit = async(e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-        try {
-          const res = await fetch("http://localhost:8080/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email,password }),
-          });
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.message || "Registration failed");
-          }
-          else {
-            toast.success("Registration successful!");
-            navigate("/login");
-          }
-        } catch (err) {
-           console.error("Registration error:", err);
-          return;
-        }
-      };
+  try {
+    const res = await fetch("https://chatgpt-4ema.onrender.com/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+    if (res.ok) {
+      toast.success("Registration successful!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500)
+  } }
+  catch (err) {
+    toast.error(err.message || "Registration failed");
+  }
+};
+
     
 
   return (
