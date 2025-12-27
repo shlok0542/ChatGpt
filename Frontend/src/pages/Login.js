@@ -4,12 +4,16 @@ import toast, { Toaster } from "react-hot-toast";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import {BarLoader,} from "react-spinners";
+import ForgotPasswordDialog from "../components/ForgotPassword";
+
+
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [hidden, setHidden] = React.useState(true);
   const Navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   /* Backend URL */
   const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -55,7 +59,12 @@ const Login = () => {
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
         <BarLoader loading={loading} color="#22c55e" />
       </div>
-
+        
+      <ForgotPasswordDialog
+        isOpen={open}
+        onClose={() => setOpen(false)}
+      />
+        
       <div className="relative z-10 w-full max-w-md">
         {/* Logo / Title */}
         <div className="mb-6 text-center">
@@ -103,6 +112,7 @@ const Login = () => {
                 <button
                   type="button"
                   className="text-[11px] font-medium text-cyan-300 hover:text-cyan-200"
+                  onClick={() => setOpen(true)}
                 >
                   Forgot?
                 </button>
