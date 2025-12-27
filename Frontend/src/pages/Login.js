@@ -1,9 +1,9 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
-import {BarLoader, PropagateLoader, PuffLoader, ScaleLoader, SyncLoader} from "react-spinners";
+import {BarLoader,} from "react-spinners";
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -15,30 +15,35 @@ const Login = () => {
 
   /* handle submit function */
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-        if (res.ok) {
-        setLoading(false);
-        toast.success("Login successful!");
-        setTimeout(() => {
-          Navigate("/chat");
-        }, 1500);
+  e.preventDefault();
+  setLoading(true);
 
-      } else {
-        const data = await res.json();
-        throw new Error(data.message || "Login failed");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      return;
+  try {
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Login failed");
     }
-  };
+
+    toast.success("Login successful!");
+
+    setTimeout(() => {
+      Navigate("/chat");
+    }, 1500);
+
+  } catch (error) {
+    console.error(error);
+    toast.error(error.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
       {/* Background glow circles */}
@@ -46,10 +51,10 @@ const Login = () => {
         <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
         <div className="absolute -bottom-32 -right-16 h-80 w-80 rounded-full bg-cyan-500/30 blur-3xl" />
       </div>
-         <Toaster />
-         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
-  <BarLoader loading={loading} color="#22c55e"/>
-</div>
+      <Toaster />
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+        <BarLoader loading={loading} color="#22c55e" />
+      </div>
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo / Title */}
@@ -58,7 +63,8 @@ const Login = () => {
             Welcome back 👋
           </h1>
           <p className="mt-2 text-sm text-slate-300">
-            Login to continue to your <span className="font-medium">AI</span> assistant
+            Login to continue to your <span className="font-medium">AI</span>{" "}
+            assistant
           </p>
         </div>
         {/* Card */}
@@ -110,10 +116,18 @@ const Login = () => {
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/40 transition"
               />
             </div>
-            <div className="absolute top-[121px] right-[37px]" onClick={(e)=>{if(password)setHidden(!hidden)}}>
-              {hidden ?  <EyeOff size={20} color={password?"#60828a":"#4a4545"} /> : <Eye  size={20} color={password?"#60828a":"#4a4545"} />}
+            <div
+              className="absolute top-[121px] right-[37px]"
+              onClick={(e) => {
+                if (password) setHidden(!hidden);
+              }}
+            >
+              {hidden ? (
+                <EyeOff size={20} color={password ? "#60828a" : "#4a4545"} />
+              ) : (
+                <Eye size={20} color={password ? "#60828a" : "#4a4545"} />
+              )}
             </div>
-
 
             {/* Submit button */}
             <button

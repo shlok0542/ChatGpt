@@ -19,7 +19,12 @@ const Resister = () => {
   /* handle submit function */
   const handleSubmit = async (e) => {
   e.preventDefault();
+  if(password.length<6){
+    toast.error("Password must be at least 6 characters long");
+    return;
+  }
   setLoading(true);
+ 
   try {
     const res = await fetch(`${API_URL}/register`, {
       method: "POST",
@@ -32,17 +37,27 @@ const Resister = () => {
         password,
       }),
     });
-    if (res.ok) {
-      setLoading(false);
-      toast.success("Registration successful!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500)
-  } }
-  catch (err) {
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Registration failed");
+    }
+
+    toast.success("Registration successful!");
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
+
+  } catch (err) {
+    console.error(err);
     toast.error(err.message || "Registration failed");
+  } finally {
+    setLoading(false);
   }
 };
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
@@ -55,10 +70,10 @@ const Resister = () => {
    <div className="fixed top-10 md:top-20 left-1/2 -translate-x-1/2 z-50">
   <BarLoader loading={loading} color="#22c55e"/>
 </div>
-      <div className="relative z-10 w-full max-w-md">
+      <div className="relative z-10 w-full max-w-md ">
         {/* Title */}
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl md:text-4xl font-semibold tracking-tight text-white">
             Create Account ✨
           </h1>
           <p className="mt-2 text-sm text-slate-300">
@@ -73,7 +88,6 @@ const Resister = () => {
             onSubmit={handleSubmit
             }
           >
-           <Toaster/>
             {/* Full Name */}
             <div className="space-y-1.5">
               <label className="block text-xs font-medium text-slate-200">
@@ -113,7 +127,7 @@ const Resister = () => {
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-pink-400/70 focus:ring-2 focus:ring-pink-500/40 transition"   
                  value={password}
                 onChange={(e) => setPassword(e.target.value)}          />
-              <div className="absolute top-[222px] md:top-[215px] right-[40px]" onClick={(e)=>{if(password)setHidden(!hidden)}}>
+              <div className="absolute top-[207px] md:top-[200px] right-[40px]" onClick={(e)=>{if(password)setHidden(!hidden)}}>
               {hidden ?   <EyeOff color={password?"#60828a":"#4a4545"} /> : <Eye color={password?"#60828a":"#4a4545"} />}
             </div>
             </div>
