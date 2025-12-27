@@ -1,29 +1,35 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
-
+import toast, { Toaster } from "react-hot-toast"
+import { Eye } from "lucide-react";
+import { EyeOff } from "lucide-react";
+import {BarLoader, PropagateLoader, PuffLoader, ScaleLoader, SyncLoader} from "react-spinners";
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [hidden, setHidden] = React.useState(true);
   const Navigate = useNavigate();
-
+  const [loading, setLoading] = React.useState(false);
   /* Backend URL */
   const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   /* handle submit function */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      if (res.ok) {
+        if (res.ok) {
+        setLoading(false);
         toast.success("Login successful!");
         setTimeout(() => {
           Navigate("/chat");
         }, 1500);
+
       } else {
         const data = await res.json();
         throw new Error(data.message || "Login failed");
@@ -35,12 +41,15 @@ const Login = () => {
   };
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
-      <Toaster />
       {/* Background glow circles */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
         <div className="absolute -bottom-32 -right-16 h-80 w-80 rounded-full bg-cyan-500/30 blur-3xl" />
       </div>
+         <Toaster />
+         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+  <BarLoader loading={loading} color="#22c55e"/>
+</div>
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo / Title */}
@@ -49,30 +58,11 @@ const Login = () => {
             Welcome back 👋
           </h1>
           <p className="mt-2 text-sm text-slate-300">
-            Login to continue to your dashboard
+            Login to continue to your <span className="font-medium">AI</span> assistant
           </p>
         </div>
-
         {/* Card */}
         <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl shadow-black/40 p-6 md:p-8">
-          {/* Social buttons */}
-          <div className="flex gap-3 mb-5">
-            <button className="flex-1 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-xs md:text-sm font-medium text-slate-100 hover:bg-white/10 transition">
-              Continue with Google
-            </button>
-            <button className="flex-1 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-xs md:text-sm font-medium text-slate-100 hover:bg-white/10 transition">
-              Continue with GitHub
-            </button>
-          </div>
-
-          {/* Divider */}
-          <div className="relative my-4">
-            <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-2 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
-              Or sign in with email
-            </span>
-          </div>
-
           {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
@@ -91,11 +81,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40 transition"
-                  placeholder="you@example.com"
                 />
-                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-slate-400">
-                  @gmail.com
-                </span>
               </div>
             </div>
 
@@ -117,13 +103,17 @@ const Login = () => {
               </div>
               <input
                 id="password"
-                type="password"
+                type={hidden ? "password" : "text"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/40 transition"
               />
             </div>
+            <div className="absolute top-[121px] right-[37px]" onClick={(e)=>{if(password)setHidden(!hidden)}}>
+              {hidden ?  <EyeOff size={20} color={password?"#60828a":"#4a4545"} /> : <Eye  size={20} color={password?"#60828a":"#4a4545"} />}
+            </div>
+
 
             {/* Submit button */}
             <button

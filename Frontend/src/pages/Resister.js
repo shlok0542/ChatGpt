@@ -1,11 +1,15 @@
 import React from "react";
 import {NavLink ,useNavigate} from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { Eye } from "lucide-react";
+import { EyeOff } from "lucide-react";
+import { BarLoader } from "react-spinners";
 const Resister = () => {
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [hidden, setHidden] = React.useState(true);
   const [password, setPassword] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const navigate=useNavigate();
  
 
@@ -15,7 +19,7 @@ const Resister = () => {
   /* handle submit function */
   const handleSubmit = async (e) => {
   e.preventDefault();
-
+  setLoading(true);
   try {
     const res = await fetch(`${API_URL}/register`, {
       method: "POST",
@@ -29,6 +33,7 @@ const Resister = () => {
       }),
     });
     if (res.ok) {
+      setLoading(false);
       toast.success("Registration successful!");
       setTimeout(() => {
         navigate("/login");
@@ -39,8 +44,6 @@ const Resister = () => {
   }
 };
 
-    
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
       {/* Background glow */}
@@ -48,7 +51,10 @@ const Resister = () => {
         <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl" />
         <div className="absolute -bottom-32 -right-16 h-80 w-80 rounded-full bg-cyan-500/30 blur-3xl" />
       </div>
-
+   <Toaster/>
+   <div className="fixed top-10 md:top-20 left-1/2 -translate-x-1/2 z-50">
+  <BarLoader loading={loading} color="#22c55e"/>
+</div>
       <div className="relative z-10 w-full max-w-md">
         {/* Title */}
         <div className="mb-6 text-center">
@@ -77,7 +83,6 @@ const Resister = () => {
                 type="text"
                 required
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/40 transition"
-                placeholder="John Doe"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -92,7 +97,6 @@ const Resister = () => {
                 type="email"
                 required
                 className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-cyan-400/70 focus:ring-2 focus:ring-cyan-500/40 transition"
-                placeholder="you@example.com"
                  value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -104,28 +108,16 @@ const Resister = () => {
                 Password
               </label>
               <input
-                type="password"
+                type={hidden ? "password" : "text"}
                 required
-                className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-pink-400/70 focus:ring-2 focus:ring-pink-500/40 transition"
-                placeholder="●●●●●●●●"
+                className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 outline-none focus:border-pink-400/70 focus:ring-2 focus:ring-pink-500/40 transition"   
                  value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+                onChange={(e) => setPassword(e.target.value)}          />
+              <div className="absolute top-[222px] md:top-[215px] right-[40px]" onClick={(e)=>{if(password)setHidden(!hidden)}}>
+              {hidden ?   <EyeOff color={password?"#60828a":"#4a4545"} /> : <Eye color={password?"#60828a":"#4a4545"} />}
+            </div>
             </div>
            
-            {/* Terms
-            <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                required
-                className="h-3.5 w-3.5 rounded border border-white/25 bg-transparent text-cyan-400 focus:ring-0"
-              />
-              I agree to the{" "}
-              <span className="text-cyan-300 hover:text-cyan-200">
-                Terms & Conditions
-              </span>
-            </label> */}
-
             {/* Submit Button */}
             <button
               type="submit"
