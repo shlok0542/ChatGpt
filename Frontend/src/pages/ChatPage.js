@@ -3,21 +3,23 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-
-const initialMessages = [
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+import { UserContext } from "../Context/Usercontext";
+import '../App.css';
+ const initialMessages = [
   {
     id: 1,
     role: "assistant",
-    content: "Hello Shlok.\nHow can I help you today?",
+    content: `Hello.\nHow can I help you today?`,
   },
 ];
-
 const ChatPage = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
-
+  const [SidebarOpen, setSidebarOpen] = useState(false);
   const endRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -122,22 +124,25 @@ while (index < text.length) {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black flex items-center justify-center px-4">
-      <div className="w-full max-w-5xl h-[92vh] bg-white/5 backdrop-blur-xl border border-white/10 rounded-[32px] shadow-[0_0_70px_rgba(16,185,129,0.15)] flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="px-6 py-4 flex justify-between items-center border-b border-white/10">
-          <div>
-            <h1 className="text-lg font-semibold">AI Chat Console</h1>
-            <p className="text-xs text-slate-400">Gemini powered assistant</p>
-          </div>
-          <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-            ● Online
-          </span>
-        </header>
+  const handleClick=()=>{
+    if(SidebarOpen)
+    {
+      setSidebarOpen(false);
+    }
+    else{
+      setSidebarOpen(true);
+    }
+  }
 
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black flex-col items-center justify-center px-4">
+   
+     <Navbar onMenuClick={handleClick}/>
+      {SidebarOpen? <Sidebar />: "" }
+      <div className="w-full max-w-5xl h-[92vh] bg-transparent backdrop-blur-xl flex flex-col overflow-hidden">
+        
         {/* Messages */}
-        <main className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+        <main className="flex-1 overflow-y-auto px-6 py-6 space-y-6 h-94 mt-14  ">
           {messages.map((msg) => (
             <Bubble key={msg.id} {...msg} />
           ))}
@@ -148,7 +153,7 @@ while (index < text.length) {
         {/* Input */}
         <form
           onSubmit={handleSend}
-          className="border-t border-white/10 p-4 bg-black/40"
+          className="border-t border-white/10 p-4 bg-white/5 backdrop-blur-md rounded-3xl"
         >
           <div className="flex items-end gap-3">
             <textarea
@@ -157,10 +162,10 @@ while (index < text.length) {
               value={input}
               onChange={(e) => {
                 setInput(e.target.value);
-                autoResize();
+                 autoResize();
               }}
               placeholder="Ask anything..."
-              className="text-white flex-1 max-h-40 resize-none rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500 placeholder:text-slate-500"
+              className="text-white flex-1 max-h-40 resize-none rounded-2xl bg-white/5 border border-white/10 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500 placeholder:text-slate-500 RemoveScollbar"
             />
 
             <button
@@ -240,3 +245,38 @@ const TypingIndicator = () => (
 );
 
 export default ChatPage;
+
+// import AppLayout from "../components/AppLayout";
+
+// const ChatPage = () => {
+//   const chats = [
+//     { id: 1, title: "React useEffect explanation" },
+//     { id: 2, title: "Node.js auth flow" },
+//   ];
+
+//   const handleNewChat = () => {
+//     console.log("New chat");
+//   };
+
+//   const handleSelectChat = (id) => {
+//     console.log("Open chat", id);
+//   };
+
+//   return (
+//     <AppLayout
+//       chats={chats}
+//       onNewChat={handleNewChat}
+//       onSelectChat={handleSelectChat}
+//     >
+//       {/* YOUR EXISTING CHAT UI HERE (unchanged) */}
+//       <div className="h-full flex items-center justify-center px-4">
+       
+
+
+       
+//       </div>
+//     </AppLayout>
+//   );
+// };
+
+// export default ChatPage;

@@ -3,51 +3,47 @@ import { NavLink, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
-import {BarLoader,} from "react-spinners";
+import { BarLoader } from "react-spinners";
 import ForgotPasswordDialog from "../components/ForgotPassword";
-
-
+import { UserContext } from "../Context/Usercontext";
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [hidden, setHidden] = React.useState(true);
-  const Navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  /* Backend URL */
-  const API_URL = process.env.REACT_APP_BACKEND_URL;
-
+  const API_URL = process.env.REACT_APP_BACKEND_URL; // Backnend url
+  const Navigate = useNavigate();
+  const {setUserData} = React.useContext(UserContext);
+  
   /* handle submit function */
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const res = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Login failed");
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+      toast.success("Login successful!");
+      setUserData(data);
+      setTimeout(() => {
+        Navigate("/chat", { replace: true });
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
-
-    toast.success("Login successful!");
-
-    setTimeout(() => {
-      Navigate("/chat");
-    }, 1500);
-
-  } catch (error) {
-    console.error(error);
-    toast.error(error.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-950 to-zinc-900 flex items-center justify-center px-4">
       {/* Background glow circles */}
@@ -59,12 +55,9 @@ const Login = () => {
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
         <BarLoader loading={loading} color="#22c55e" />
       </div>
-        
-      <ForgotPasswordDialog
-        isOpen={open}
-        onClose={() => setOpen(false)}
-      />
-        
+
+      <ForgotPasswordDialog isOpen={open} onClose={() => setOpen(false)} />
+
       <div className="relative z-10 w-full max-w-md">
         {/* Logo / Title */}
         <div className="mb-6 text-center">
