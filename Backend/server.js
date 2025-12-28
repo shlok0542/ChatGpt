@@ -29,9 +29,8 @@ app.post("/register", async (req, res) => {
   const { email } = req.body;
 
   const checkuserExist = await UserModel.findOne({ email });
-  if(checkuserExist)
-  {
-    return  res.status(400).json({
+  if (checkuserExist) {
+    return res.status(400).json({
       message: "User already exists with this email",
     });
   }
@@ -39,7 +38,8 @@ app.post("/register", async (req, res) => {
   try {
     const user = await UserModel.create(req.body);
     res.status(201).json({
-      message: "User registered successfully",user
+      message: "User registered successfully",
+      user,
     });
   } catch (err) {
     res.status(500).json({
@@ -127,7 +127,5 @@ app.post("/api/gemini", async (req, res) => {
    SERVER LISTEN
 ========================= */
 app.listen(PORT, () => {
-  console.log(
-    `Server running in ${process.env.DEV_MODE} mode on port ${PORT}`
-  );
+  console.log(`Server running in ${process.env.DEV_MODE} mode on port ${PORT}`);
 });
