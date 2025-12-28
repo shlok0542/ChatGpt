@@ -6,14 +6,13 @@ import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
 function App() {
   const navigate= useNavigate();
-  const storeData = localStorage.getItem('userData');
   return (
     <>
       <Routes>
         <Route path='/' element={<HomePage/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />
-        <Route path='/chat' element={storeData?<ChatPage/>:navigate("/login")} />
+        <Route path='/chat' element={<ChatPage/>} />
       </Routes>
     </>
  

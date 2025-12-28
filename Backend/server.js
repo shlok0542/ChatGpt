@@ -26,6 +26,16 @@ const PORT = process.env.PORT || 8080;
    REGISTER ROUTE
 ========================= */
 app.post("/register", async (req, res) => {
+  const { email } = req.body;
+
+  const checkuserExist = await UserModel.findOne({ email });
+  if(checkuserExist)
+  {
+    return  res.status(400).json({
+      message: "User already exists with this email",
+    });
+  }
+
   try {
     const user = await UserModel.create(req.body);
     res.status(201).json({
@@ -33,8 +43,7 @@ app.post("/register", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
-      message: "Registration failed",
-      error: err.message,
+      message: "Server error",
     });
   }
 });

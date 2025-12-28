@@ -35,7 +35,7 @@ const Login = () => {
       toast.success("Login successful!");
       setUserData(data);
       setTimeout(() => {
-        Navigate("/chat", { replace: true });
+        Navigate("/chat",);
       }, 1500);
     } catch (error) {
       console.error(error);
