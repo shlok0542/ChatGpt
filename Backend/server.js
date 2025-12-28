@@ -29,12 +29,9 @@ app.post("/register", async (req, res) => {
   try {
     const user = await UserModel.create(req.body);
     res.status(201).json({
-      message: "User registered successfully",
-      name: user.username,
-      email: user.email, 
+      message: "User registered successfully",user
     });
   } catch (err) {
-    console.error("Register error:", err);
     res.status(500).json({
       message: "Registration failed",
       error: err.message,
@@ -71,7 +68,8 @@ app.post("/login", async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
-      user,
+      username: user.username,
+      email: user.email,
     });
   } catch (err) {
     console.error("Login error:", err);
